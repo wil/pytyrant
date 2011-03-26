@@ -113,6 +113,13 @@ def _t1M(code, key, count):
     ]
 
 
+def _t1Ms(code, key, count):
+    return [
+        struct.pack('>BBIi', MAGIC, code, len(key), count),
+        key,
+    ]
+
+
 def _tN(code, klst):
     outlst = [struct.pack('>BBI', MAGIC, code, len(klst))]
     for k in klst:
@@ -175,6 +182,8 @@ def socksuccess(sock):
 def socklen(sock):
     return struct.unpack('>I', sockrecv(sock, 4))[0]
 
+def socklen_s(sock):
+    return struct.unpack('>i', sockrecv(sock, 4))[0]
 
 def socklong(sock):
     return struct.unpack('>Q', sockrecv(sock, 8))[0]
@@ -445,9 +454,9 @@ class Tyrant(object):
         return list(self._fwmkeys(prefix, maxkeys))
 
     def addint(self, key, num):
-        socksend(self.sock, _t1M(C.addint, key, num))
+        socksend(self.sock, _t1Ms(C.addint, key, num))
         socksuccess(self.sock)
-        return socklen(self.sock)
+        return socklen_s(self.sock)
 
     def adddouble(self, key, num):
         fracpart, intpart = math.modf(num)
