@@ -159,7 +159,10 @@ def socksend(sock, lst):
 def sockrecv(sock, bytes):
     d = ''
     while len(d) < bytes:
-        d += sock.recv(min(8192, bytes - len(d)))
+        c = sock.recv(min(8192, bytes - len(d)))
+        if not c:
+            raise TyrantError('Connection closed')
+        d += c
     return d
 
 
