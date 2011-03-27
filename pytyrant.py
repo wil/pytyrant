@@ -168,7 +168,7 @@ def sockrecv(sock, bytes):
     while len(d) < bytes:
         c = sock.recv(min(8192, bytes - len(d)))
         if not c:
-            raise TyrantError('Connection closed')
+            raise IOError('Connection closed')
         d += c
     return d
 
